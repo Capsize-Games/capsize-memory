@@ -59,6 +59,33 @@ def test_get_or_create_participant_scoped_per_room(session: Session) -> None:
     assert p_a.id != p_b.id
 
 
+def test_record_turn_returns_the_new_row(session: Session) -> None:
+    room = get_or_create_room(session, "discord", "channel", "g:c")
+
+    turn = record_turn(session, room.id, "alice", "hi")
+
+    assert turn.id is not None
+    assert turn.speaker == "alice"
+    assert turn.text == "hi"
+
+
+def test_recent_turns_excludes_sensitive_when_asked(
+    session: Session,
+) -> None:
+    room = get_or_create_room(session, "discord", "channel", "g:c")
+    record_turn(session, room.id, "alice", "public thing")
+    record_turn(session, room.id, "alice", "private thing", is_sensitive=True)
+    session.flush()
+
+    all_turns = recent_turns(session, room.id, limit=10)
+    public_only = recent_turns(
+        session, room.id, limit=10, include_sensitive=False
+    )
+
+    assert [t.text for t in all_turns] == ["public thing", "private thing"]
+    assert [t.text for t in public_only] == ["public thing"]
+
+
 def test_record_and_recall_turns_in_order(session: Session) -> None:
     room = get_or_create_room(session, "discord", "channel", "g:c")
     record_turn(session, room.id, "alice", "hi")

@@ -102,25 +102,38 @@ def record_turn(
     text: str,
     participant_id: int | None = None,
     is_sensitive: bool = False,
-) -> None:
-    """Append one turn to a room's log."""
-    session.add(
-        ConversationTurn(
-            room_id=room_id,
-            participant_id=participant_id,
-            speaker=speaker,
-            text=text,
-            is_sensitive=is_sensitive,
-        )
+) -> ConversationTurn:
+    """Append one turn to a room's log. Returns the new row, flushed."""
+    turn = ConversationTurn(
+        room_id=room_id,
+        participant_id=participant_id,
+        speaker=speaker,
+        text=text,
+        is_sensitive=is_sensitive,
     )
+    session.add(turn)
+    session.flush()
+    return turn
 
 
-def recent_turns(session: Session, room_id: int, limit: int) -> list[Turn]:
-    """Return up to `limit` most recent turns, oldest first."""
+def recent_turns(
+    session: Session,
+    room_id: int,
+    limit: int,
+    include_sensitive: bool = True,
+) -> list[Turn]:
+    """Return up to `limit` most recent turns, oldest first.
+
+    `include_sensitive=False` excludes any turn flagged `is_sensitive`
+    - the caller's job to set when the destination this context feeds
+    into is itself public, so a fact/turn learned somewhere private
+    never gets echoed back publicly.
+    """
+    query = session.query(ConversationTurn).filter_by(room_id=room_id)
+    if not include_sensitive:
+        query = query.filter_by(is_sensitive=False)
     rows = (
-        session.query(ConversationTurn)
-        .filter_by(room_id=room_id)
-        .order_by(
+        query.order_by(
             ConversationTurn.created_at.desc(), ConversationTurn.id.desc()
         )
         .limit(limit)
