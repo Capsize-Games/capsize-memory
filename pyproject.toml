@@ -25,6 +25,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
+    "capsize-commons[db]>=0.1.2",
     "sqlalchemy>=2.0.30",
 ]
 
