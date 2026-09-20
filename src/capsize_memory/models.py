@@ -39,9 +39,7 @@ class Room(Base):
     platform: Mapped[str] = mapped_column(String(32))
     room_type: Mapped[str] = mapped_column(String(32))
     external_key: Mapped[str] = mapped_column(String(255))
-    display_name: Mapped[str | None] = mapped_column(
-        String(255), default=None
-    )
+    display_name: Mapped[str | None] = mapped_column(String(255), default=None)
     created_at: Mapped[datetime.datetime] = mapped_column(
         UtcDateTime, default=_utcnow
     )
@@ -63,9 +61,7 @@ class RoomParticipant(Base):
     __table_args__ = (UniqueConstraint("room_id", "external_id"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    room_id: Mapped[int] = mapped_column(
-        ForeignKey("rooms.id"), index=True
-    )
+    room_id: Mapped[int] = mapped_column(ForeignKey("rooms.id"), index=True)
     external_id: Mapped[str] = mapped_column(String(255))
     display_name: Mapped[str] = mapped_column(String(255))
     first_seen_at: Mapped[datetime.datetime] = mapped_column(
@@ -90,9 +86,7 @@ class ConversationTurn(Base):
     __tablename__ = "conversation_turns"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    room_id: Mapped[int] = mapped_column(
-        ForeignKey("rooms.id"), index=True
-    )
+    room_id: Mapped[int] = mapped_column(ForeignKey("rooms.id"), index=True)
     # Null for the bot's own turns - a participant is always someone
     # else the bot is talking to, never the bot itself.
     participant_id: Mapped[int | None] = mapped_column(

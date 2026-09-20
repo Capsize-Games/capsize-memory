@@ -1,0 +1,42 @@
+name: capsize-memory
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Python library quality
+    # This private repository uses the workstation runner and shared queue.
+    runs-on: [self-hosted, Linux, X64, capsize-memory-ci]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.0"
+      - run: uv sync --all-extras
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy src
+      - run: uv run pytest
+      - run: uv build
+
+  manifest:
+    name: validate capsize.json
+    runs-on: [self-hosted, Linux, X64, capsize-memory-ci]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.0"
+      - name: Validate manifest against the published schema
+        run: |
+          uvx --from check-jsonschema check-jsonschema --schemafile \
+            https://raw.githubusercontent.com/Capsize-Games/capsize-ci/1a50d06c20022f9bbc44bad002add302e1dae646/schema/capsize-1.json \
+            capsize.json
