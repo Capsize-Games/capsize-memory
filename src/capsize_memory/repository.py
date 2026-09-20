@@ -139,9 +139,7 @@ def recent_turns(
         .limit(limit)
         .all()
     )
-    return [
-        Turn(speaker=row.speaker, text=row.text) for row in reversed(rows)
-    ]
+    return [Turn(speaker=row.speaker, text=row.text) for row in reversed(rows)]
 
 
 def clear_turns(session: Session, room_id: int) -> None:

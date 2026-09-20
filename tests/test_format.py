@@ -22,9 +22,7 @@ def test_format_transcript_preserves_order() -> None:
         Turn(speaker="bob", text="third"),
     ]
     result = format_transcript(turns)
-    assert result == (
-        "- alice: first\n- capsize: second\n- bob: third"
-    )
+    assert result == ("- alice: first\n- capsize: second\n- bob: third")
 
 
 def test_format_transcript_multi_speaker() -> None:

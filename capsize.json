@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Capsize-Games/capsize-ci/1a50d06c20022f9bbc44bad002add302e1dae646/schema/capsize-1.json",
+  "schema_version": 1,
+  "standards": "1.x",
+  "name": "capsize-memory",
+  "type": "library",
+  "languages": ["python"],
+  "framework": null,
+  "databases": ["postgresql", "sqlite"],
+  "runtimes": { "python": ">=3.11" },
+  "entrypoints": {
+    "python": "src/capsize_memory"
+  },
+  "task_runner": "just",
+  "commands": {
+    "setup": "setup",
+    "build": "build",
+    "test": "test",
+    "lint": "lint",
+    "format": "format",
+    "typecheck": "typecheck",
+    "run": null,
+    "clean": "clean",
+    "docs": "docs",
+    "ci": "ci"
+  },
+  "dependencies": {
+    "python": "pyproject.toml"
+  },
+  "instructions": {
+    "canonical": "AGENTS.md",
+    "rules": [
+      "capsize/base",
+      "capsize/library",
+      "capsize/lang/python"
+    ]
+  },
+  "owner": "Capsize-Games",
+  "license": "MIT"
+}

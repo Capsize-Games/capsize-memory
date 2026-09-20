@@ -26,13 +26,22 @@ per-platform ad hoc keys.
 
 ```python
 from capsize_memory.repository import (
-    get_or_create_room, get_or_create_participant, record_turn, recent_turns,
+    get_or_create_room,
+    get_or_create_participant,
+    record_turn,
+    recent_turns,
 )
 from capsize_memory.format import format_transcript
 
 room = get_or_create_room(session, "discord", "channel", "guild:channel")
 alice = get_or_create_participant(session, room.id, "user123", "alice")
-record_turn(session, room.id, "alice", "hey, just moved to Austin", participant_id=alice.id)
+record_turn(
+    session,
+    room.id,
+    "alice",
+    "hey, just moved to Austin",
+    participant_id=alice.id,
+)
 record_turn(session, room.id, "capsize", "nice, welcome!")
 
 turns = recent_turns(session, room.id, limit=6)
