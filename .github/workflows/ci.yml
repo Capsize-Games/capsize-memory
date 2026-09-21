@@ -10,8 +10,8 @@ permissions:
 jobs:
   quality:
     name: Python library quality
-    # This private repository uses the workstation runner and shared queue.
-    runs-on: [self-hosted, Linux, X64, capsize-memory-ci]
+    # This public repository uses GitHub-hosted CI.
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -29,7 +29,7 @@ jobs:
 
   manifest:
     name: validate capsize.json
-    runs-on: [self-hosted, Linux, X64, capsize-memory-ci]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
